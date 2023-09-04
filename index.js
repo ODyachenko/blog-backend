@@ -1,7 +1,9 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import { regValidation } from './validations/registration.js';
+import { validationResult } from 'express-validator';
 
 const app = express();
 app.use(express.json());
@@ -14,7 +16,16 @@ mongoose
   .catch((err) => console.log('DB error', err));
 
 // User Registration
-app.post('/auth/registration', (req, res) => {});
+app.post('/auth/registration', regValidation, (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json(errors.array());
+  }
+  res.json({
+    success: true,
+  });
+});
 
 app.listen(4444, (err) => {
   if (err) {
