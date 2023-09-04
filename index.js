@@ -1,10 +1,17 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 const app = express();
 app.use(express.json());
 dotenv.config();
+
+// Connect to DB
+mongoose
+  .connect(process.env.DB_ACCESS_LINK)
+  .then(() => console.log('DB connected'))
+  .catch((err) => console.log('DB error', err));
 
 app.get('/', (req, res) => {
   res.send('Hello world');
