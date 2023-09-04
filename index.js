@@ -13,26 +13,8 @@ mongoose
   .then(() => console.log('DB connected'))
   .catch((err) => console.log('DB error', err));
 
-app.get('/', (req, res) => {
-  res.send('Hello world');
-});
-
-app.post('/auth/login', (req, res) => {
-  console.log(req.body);
-
-  const token = jwt.sign(
-    {
-      name: req.body.name,
-      email: req.body.email,
-    },
-    process.env.AUTH_KEY
-  );
-
-  res.json({
-    success: true,
-    token,
-  });
-});
+// User Registration
+app.post('/auth/registration', (req, res) => {});
 
 app.listen(4444, (err) => {
   if (err) {
