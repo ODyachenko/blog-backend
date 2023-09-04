@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import { regValidation } from './validations/registration.js';
 import UserModel from './models/User.js';
 import bcrypt from 'bcrypt';
+import checkAuth from './utils/checkAuth.js';
+import User from './models/User.js';
 
 const app = express();
 app.use(express.json());
@@ -109,6 +111,28 @@ app.post('/auth/registration', regValidation, async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: 'Registration failed',
+    });
+  }
+});
+
+// Information about authorized user
+app.get('/auth/me', checkAuth, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      });
+    }
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json(userData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Access denied',
     });
   }
 });
