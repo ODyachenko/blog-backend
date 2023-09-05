@@ -2,13 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import multer from 'multer';
-import checkAuth from './utils/checkAuth.js';
 import {
   regValidation,
   loginValidation,
   postCreateValidation,
 } from './validations/validations.js';
-import { getMe, login, registration } from './components/UserController.js';
 import {
   createPost,
   getAll,
@@ -16,8 +14,11 @@ import {
   deletePost,
   updatePost,
 } from './components/PostController.js';
+import { getMe, login, registration } from './components/UserController.js';
+import checkAuth from './utils/checkAuth.js';
 import handleValidationErrors from './utils/handleValidationErrors.js';
 
+// Express settings
 const app = express();
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
