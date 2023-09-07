@@ -6,6 +6,7 @@ import {
   regValidation,
   loginValidation,
   postCreateValidation,
+  commentCreateValidation,
 } from './validations/validations.js';
 import {
   createPost,
@@ -15,14 +16,17 @@ import {
   updatePost,
 } from './components/PostController.js';
 import { getMe, login, registration } from './components/UserController.js';
+import { getComments, createComments } from './components/CommentsContoller.js';
 import checkAuth from './utils/checkAuth.js';
 import handleValidationErrors from './utils/handleValidationErrors.js';
+import cors from 'cors';
 
 // Express settings
 const app = express();
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 dotenv.config();
+app.use(cors());
 
 // Multer storage
 const storage = multer.diskStorage({
@@ -41,19 +45,25 @@ mongoose
   .then(() => console.log('DB connected'))
   .catch((err) => console.log('DB error', err));
 
-// User authorization
+// User routes
 app.post('/auth/login', loginValidation, handleValidationErrors, login);
-
-// User Registration/Validation
 app.post(
   '/auth/registration',
   regValidation,
   handleValidationErrors,
   registration
 );
-
-// Information about authorized user
 app.get('/auth/me', checkAuth, getMe);
+
+// Comments routes
+app.get('/comments', getComments);
+app.post(
+  '/comments',
+  checkAuth,
+  commentCreateValidation,
+  handleValidationErrors,
+  createComments
+);
 
 // Posts routes
 app.get('/posts', getAll);
