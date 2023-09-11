@@ -1,8 +1,18 @@
 import PostModel from '../models/Post.js';
 
 export const getAll = async (req, res) => {
+  const { sortBy, filter } = req.query;
+  let tags = [];
+  if (filter) {
+    tags = filter.split(',').map((tag) => `#${tag}`);
+  }
+  const filterCondition = filter ? { tags: { $in: tags } } : {};
+
   try {
-    const posts = await PostModel.find().populate('user').exec();
+    const posts = await PostModel.find(filterCondition)
+      .sort({ [sortBy]: 'desc' })
+      .populate('user')
+      .exec();
 
     res.json(posts);
   } catch (error) {
