@@ -57,6 +57,7 @@ app.get('/auth/me', checkAuth, getMe);
 
 // Comments routes
 app.get('/comments', getComments);
+
 app.post(
   '/comments',
   checkAuth,

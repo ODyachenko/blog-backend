@@ -70,6 +70,7 @@ export const createPost = async (req, res) => {
       imageUrl: req.body.imageUrl,
       tags: req.body.tags,
       user: req.userId,
+      comments: [],
     });
 
     const post = await doc.save();
@@ -136,6 +137,41 @@ export const updatePost = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: 'Could not update the article',
+    });
+  }
+};
+
+export const createComment = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await PostModel.findOne({ _id: postId });
+    const comment = {
+      text: req.body.text,
+      user: req.userId,
+    };
+    post.comments.push(comment);
+    await PostModel.findOneAndUpdate({ _id: postId }, post);
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Could not create the comment',
+    });
+  }
+};
+
+export const getComments = async (req, res) => {
+  const postId = req.params.id;
+  try {
+    const post = await PostModel.findById(postId);
+    const comments = post.comments;
+    res.json(comments);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Could not get the comments',
     });
   }
 };
