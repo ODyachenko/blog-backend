@@ -88,7 +88,7 @@ app.patch(
 // Multer route
 app.post('/uploads', upload.single('image'), (req, res) => {
   res.json({
-    url: `uploads/${req.file.originalname}`,
+    url: `/uploads/${req.file.originalname}`,
   });
 });
 
